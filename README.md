@@ -1,6 +1,8 @@
-# Prime Mover
+# Stealing Fire
 
-SuperCollider code for the sound score of the contemporary dance performance Prime Mover by Norwegian/Estonian choreographer duo Külli Roosna and Kenneth Flak. The evening-length performance will premiere in Bærum Kulturhus in October 2018.
+SuperCollider code for the sound score of the contemporary dance performance 
+Stealing Fire by Norwegian/Estonian choreographer duo Külli Roosna and Kenneth 
+Flak. 
 
 ## Dependencies
 - SC3-plugins
@@ -16,8 +18,4 @@ In the performance we use [SenseStage](https://sensestage.eu) MiniBee accelerome
 ## Authors
 Kenneth Flak - Külli Roosna
 [Roosna & Flak](https://.roosnaflak.com)
-
-## Code mentor
-Marije Baalman
-
 
