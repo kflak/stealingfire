@@ -13,14 +13,13 @@
 
     MIDIClient.init;
     MIDIClient.sources.do{|device, idx|
-        if(device.name.contains("Ableton Push")){
+        if(device.name.contains("Ableton Push MIDI 2")){
             MIDIIn.connect(idx, device);
             "% connected\n".postf(device.name);
+            ~hasPush = true;
+            ~push = MIDIOut.newByName("Ableton Push", "Ableton Push MIDI 2");
         }
     };
-    if(MIDIClient.externalDestinations.asString.contains("Launchpad")){~hasLaunchpad = true};
-    if(MIDIClient.externalDestinations.asString.contains("Launch Control")){ ~hasLaunchControl = true };
-    if(MIDIClient.externalDestinations.asString.contains("QmidiNet")){~hasQmidiNet = true};
 
     Buffer.freeAll;
     s.quit;
