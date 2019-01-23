@@ -1,9 +1,9 @@
 (
-~deltaTriggers[\sineGrain][~mbIDs.indexOf(10)].play( out: ~bus[\master], target: ~group[\mix] );
-~deltaTriggers[\ryuish][~mbIDs.indexOf(11)].play( out: ~bus[\master], target: ~group[\mix] );
-~deltaTriggers[\combdust][~mbIDs.indexOf(12)].play( out: ~bus[\master], target: ~group[\mix] );
-~deltaTriggers[\dust][~mbIDs.indexOf(13)].play( out: ~bus[\master], target: ~group[\mix]); 
-~deltaTriggers[\aliinaLaugh][~mbIDs.indexOf(14)].play(out: ~bus[\master], target: ~group[\mix]);
+~deltaTriggers[\sineGrain][~mbIDs.indexOf(1)].play( out: ~bus[\master], target: ~group[\mix] );
+~deltaTriggers[\ryuish][~mbIDs.indexOf(2)].play( out: ~bus[\master], target: ~group[\mix] );
+~deltaTriggers[\combdust][~mbIDs.indexOf(3)].play( out: ~bus[\master], target: ~group[\mix] );
+~deltaTriggers[\dust][~mbIDs.indexOf(4)].play( out: ~bus[\master], target: ~group[\mix]); 
+~deltaTriggers[\aliinaLaugh][~mbIDs.indexOf(5)].play(out: ~bus[\master], target: ~group[\mix]);
 )
 (
 ~deltaTriggers[\sineGrain][~mbIDs.indexOf(10)].release(1);
@@ -27,7 +27,7 @@
 ~deltaTriggers[\boiling][~mbIDs.indexOf(14)].release(1);
 )
 
-~deltaTriggers[\aliina_cryIDs].do{|id, idx| ~deltaTriggers[\aliina_cry][idx].play(out: ~bus[\master], target: ~group[\mix])};
+~mbIDs.do{|id, idx| ~deltaTriggers[\aliina_cry][idx].play(out: ~bus[\master], target: ~group[\mix])};
 ~deltaTriggers[\aliina_cryIDs].do{|id, idx| ~deltaTriggers[\aliina_cry][idx].release(1)};
 
 ~deltaTriggers[\chewIDs].do{|id, idx| ~deltaTriggers[\chew][idx].play(out: ~bus[\master], target: ~group[\mix])};

@@ -6,15 +6,14 @@
 !_TAG_PROGRAM_URL	https://ctags.io/	/official site/
 !_TAG_PROGRAM_VERSION	0.0.0	/45968eff/
 Authors	README.md	/^## Authors$/;"	s
-Code mentor	README.md	/^## Code mentor$/;"	s
 Dependencies	README.md	/^## Dependencies$/;"	s
-Prime Mover	README.md	/^# Prime Mover$/;"	c
 Sensors	README.md	/^## Sensors$/;"	s
+Two Body Orchestra	README.md	/^# Two Body Orchestra$/;"	c
 apimode	pydondefaults.ini	/^apimode = True$/;"	k	section:serial
 autostart	pydondefaults.ini	/^autostart = False$/;"	k	section:hive
 baudrate	pydondefaults.ini	/^baudrate = 57600$/;"	k	section:serial
 clean	pydondefaults.ini	/^clean = False$/;"	k	section:verbosity
-config	pydondefaults.ini	/^config = mb10-14.xml$/;"	k	section:hive
+config	pydondefaults.ini	/^config = minibeeconfig.xml$/;"	k	section:hive
 createnewfiles	pydondefaults.ini	/^createnewfiles = True$/;"	k	section:hive
 hive	pydondefaults.ini	/^[hive]$/;"	s
 host	pydondefaults.ini	/^host = 127.0.0.1$/;"	k	section:osc

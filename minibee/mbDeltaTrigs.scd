@@ -16,7 +16,7 @@
                     var bufdur = buf.duration;
                     var release = dt.linlin(0.0, 1.0, bufdur * 0.1, bufdur);
                     var attack = release * 0.3;
-                    Synth(\clean, 
+                    Synth(\playbuf, 
                         [
                             \buf, buf,
                             \amp, dt.linlin(0.0, 1.0, minAmp, maxAmp),
@@ -126,7 +126,7 @@
                 minAmp: -40.dbamp, 
                 maxAmp: -16.dbamp,
                 function: { |outbus, dt, minAmp, maxAmp|
-                    Synth(\click_dust,
+                    Synth(\clickdust,
                         [
                             \attack, 0,
                             \amp, dt.linlin(0.0, 1.0, minAmp, maxAmp),
@@ -156,7 +156,7 @@
                 minAmp: -64.dbamp, 
                 maxAmp: -16.dbamp,
                 function: { |outbus, dt, minAmp, maxAmp|
-                    Synth(\fmgrain_dust, 
+                    Synth(\fmgraindust, 
                         [
                             \attack, 0, 
                             \amp, dt.linlin(0.0, 1.0, minAmp, maxAmp),
@@ -188,7 +188,7 @@
                 function: { |outbus, dt, minAmp, maxAmp|
                     var release = dt.linlin(0.0, 1.0, 3.0, 5.0);
                     var attack = release * 0.3;
-                    Synth(\clean, 
+                    Synth(\playbuf, 
                         [
                             \buf, ~buffers[\nasa].choose,
                             \amp, dt.linlin(0.0, 1.0, minAmp, maxAmp),
@@ -218,7 +218,7 @@
                 function: { |outbus, dt, minAmp, maxAmp|
                     var release = dt.linlin(0.0, 1.0, 3.0, 5.0);
                     var attack = release * 0.3;
-                    Synth(\clean, 
+                    Synth(\playbuf, 
                         [
                             \buf, ~buffers[\metro].choose,
                             \amp, dt.linlin(0.0, 1.0, minAmp, maxAmp),
@@ -250,7 +250,7 @@
                 function: { |outbus, dt, minAmp, maxAmp|
                     var release = dt.linlin(0.0, 1.0, 3.0, 5.0);
                     var attack = release * 0.3;
-                    Synth(\clean, 
+                    Synth(\playbuf, 
                         [
                             \buf, ~buffers[\em].choose,
                             \amp, dt.linlin(0.0, 1.0, minAmp, maxAmp),
@@ -283,7 +283,7 @@
                 function: { |outbus, dt, minAmp, maxAmp|
                     var release = dt.linlin(0.0, 1.0, 3.0, 5.0);
                     var attack = release;
-                    Synth(\clean, 
+                    Synth(\playbuf, 
                         [
                             \buf, ~buffers[\nurme_wind].choose,
                             \amp, dt.linlin(0.0, 1.0, minAmp, maxAmp),
@@ -339,7 +339,7 @@
                 minAmp: -32.dbamp, 
                 maxAmp: 0.dbamp,
                 function: {|outbus, dt, minAmp, maxAmp|
-                    Synth(\clean, 
+                    Synth(\playbuf, 
                         [
                             \buf, ~buffers[\bubbles][0],
                             \amp, dt.linlin(0.0, 1.0, minAmp, maxAmp),
@@ -368,7 +368,7 @@
                 minAmp: -32.dbamp, 
                 maxAmp: -8.dbamp,
                 function: {|outbus, dt, minAmp, maxAmp|
-                    Synth(\clean, 
+                    Synth(\playbuf, 
                         [
                             \buf, ~buffers[\home_sounds][0],
                             \amp, dt.linlin(0.0, 1.0, minAmp, maxAmp),
@@ -397,7 +397,7 @@
                 minAmp: -32.dbamp, 
                 maxAmp: -12.dbamp,
                 function: {|outbus, dt, minAmp, maxAmp|
-                    Synth(\clean, 
+                    Synth(\playbuf, 
                         [
                             \buf, (~buffers[\cello] ++ ~buffers[\brpiano]).choose,
                             \amp, dt.linlin(0.0, 1.0, minAmp, maxAmp),
@@ -424,7 +424,7 @@
                 minAmp: -15.dbamp, 
                 maxAmp: 0.dbamp,
                 function: {|outbus, dt, minAmp, maxAmp|
-                    Synth(\clean, 
+                    Synth(\playbuf, 
                         [
                             \buf, ~rec_buf[~mbIDs.indexOf[id]],
                             \amp, dt.linlin(0.0, 1.0, minAmp, maxAmp),
@@ -479,7 +479,7 @@
                 minAmp: -44.dbamp, 
                 maxAmp: -18.dbamp,
                 function: {|outbus, dt, minAmp, maxAmp|
-                    Synth(\clean, 
+                    Synth(\playbuf, 
                         [
                             \buf, ~buffers[\water].choose,
                             \amp, dt.linlin(0.0, 1.0, minAmp, maxAmp),
@@ -513,7 +513,7 @@
                 minAmp: -32.dbamp, 
                 maxAmp: 9.dbamp, 
                 function: {|outbus, dt, minAmp, maxAmp|
-                    Synth(\clean, 
+                    Synth(\playbuf, 
                         [
                             \buf, ~buffers[\dancing_bodies][2],
                             \amp, dt.linlin(0.0, 1.0, minAmp, maxAmp),
@@ -541,7 +541,7 @@
                 minAmp: -32.dbamp, 
                 maxAmp: 9.dbamp,
                 function: {|outbus, dt, minAmp, maxAmp|
-                    Synth(\clean, 
+                    Synth(\playbuf, 
                         [
                             \buf, ~buffers[\dancing_bodies][1],
                             \amp, dt.linlin(0.0, 1.0, minAmp, maxAmp),
@@ -604,7 +604,7 @@
                 minAmp: -32.dbamp, 
                 maxAmp: -6.dbamp,
                 function: {|outbus, dt, minAmp, maxAmp|
-                    Synth(\clean, 
+                    Synth(\playbuf, 
                         [
                             \buf, ~buffers[\aliina_unhappy].choose,
                             \amp, dt.linlin(0.0, 1.0, minAmp, maxAmp),
@@ -633,9 +633,9 @@
                 minAmp: -32.dbamp, 
                 maxAmp: -12.dbamp,
                 function: {|outbus, dt, minAmp, maxAmp|
-                    Synth(\clean, 
+                    Synth(\playbuf, 
                         [
-                            \buf, (~buffers[\aliina_laugh]).choose,
+                            \buf, ~buffers[\aliina_laugh].choose,
                             \amp, dt.linlin(0.0, 1.0, minAmp, maxAmp),
                             \attack, dt.linlin(0.0, 1.0, 1.0, 0.1),
                             \rel, dt.linlin(0.0, 1.0, 2.0, 10.0), 
@@ -665,7 +665,7 @@
                 minAmp: -32.dbamp, 
                 maxAmp: -6.dbamp,
                 function: {|outbus, dt, minAmp, maxAmp|
-                    Synth(\clean, 
+                    Synth(\playbuf, 
                         [
                             \buf, (~buffers[\aliina_happy] ++ ~buffers[\aliina_unhappy] ++ ~buffers[\aliina_laugh]).choose,
                             \amp, dt.linlin(0.0, 1.0, minAmp, maxAmp),

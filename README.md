@@ -1,7 +1,7 @@
-# Stealing Fire
+# Two Body Orchestra
 
 SuperCollider code for the sound score of the contemporary dance performance 
-Stealing Fire by Norwegian/Estonian choreographer duo Külli Roosna and Kenneth 
+Two Body Orchestra by Norwegian/Estonian choreographer duo Külli Roosna and Kenneth 
 Flak. 
 
 ## Dependencies
