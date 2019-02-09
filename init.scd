@@ -1,5 +1,6 @@
 (
-    ~projectfolder = "pwd".unixCmdGetStdOutLines[0];
+    ~projectfolder = "/home/kf/sc/tbo";
+    // ~projectfolder = "pwd".unixCmdGetStdOutLines[0];
     ~numSpeakers = 2;
     ~numSubs = 2;
     ~hasQmidiNet = false;
@@ -32,18 +33,19 @@
             "Start".postln;
             //load synthdefs
             this.executeFile((~projectfolder+/+"sdefs.scd").standardizePath);
+            "SynthDefs done".postln;
 
-            //set up groups
-            this.executeFile((~projectfolder+/+"groups.scd").standardizePath);
-            "groups.scd done".postln;
+            ////set up groups
+            //this.executeFile((~projectfolder+/+"groups.scd").standardizePath);
+            //"groups.scd done".postln;
 
-            // set up minibee global variables
-            this.executeFile((~projectfolder+/+"minibee/mbGlob.scd").standardizePath);
-            "mbGlob.scd done".postln;
+            // // set up minibee global variables
+            // this.executeFile((~projectfolder+/+"minibee/mbGlob.scd").standardizePath);
+            // "mbGlob.scd done".postln;
 
             // set up mbDeltaTrigs
-            this.executeFile((~projectfolder+/+"minibee/mbDeltaTrigs.scd").standardizePath);
-            "mbDeltaTrigs.scd done".postln;
+            // this.executeFile((~projectfolder+/+"minibee/mbDeltaTrigs.scd").standardizePath);
+            // "mbDeltaTrigs.scd done".postln;
 
             // in the end, load the cues and pray that it works
             // this.executeFile((~projectfolder+/+"cues.scd").standardizePath);
@@ -51,4 +53,3 @@
         }
     );
 )
-

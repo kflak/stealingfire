@@ -28,5 +28,3 @@ c = Synth(\fire, [\bandpassfreq, 2600, \bandpassrq, 1/0.4]);
 d = Synth(\fire, [\bandpassrq, 1, \hipassfreq, 1000]);
 
 [a, b, c, d].do{|i| i.free};
-
-ddwMixerChannel
