@@ -1,5 +1,6 @@
-c = Chain(0, 2, chain: [\compressor, \compressor, \limiter, \eq])
-d = Chain(0, 2, chain: [[\compressor, \compressor], \limiter, \eq])
+g = Group.new();
+h = Group.new();
+c = Chain(2, [\compressor, [\attack, 0.3], \limiter, [], \eq, []])
 
 //test
 c.bus;
@@ -7,8 +8,9 @@ c.numCh;
 c.dump;
 c.free;
 c.group;
-
-c.chain[3];
+c.chain[0].get(\attack, {|i| i.postln});
+d.dump;
+d.free;
 s.plotTree;
 
 (
