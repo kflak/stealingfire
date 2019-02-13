@@ -38,12 +38,12 @@
     }).add;
 
     SynthDef(\soundin, {
-        arg in, gate=0, da=0, amp=0.2, pan=0, width=2.0, out=0;
+        arg in, gate=1, da=2, amp=0.2, pan=0, width=2.0, out=0;
         var sig, env;
         env = EnvGen.kr(Env.asr(0.01, 1.0, 0.01), gate: gate, doneAction: da);
         //not sure if this is a good idea, but now the index given to soundin
         //will be the same as the index listed on the soundcard...
-        sig = SoundIn.ar((in - 1).clip(0, 19));
+        sig = SoundIn.ar(in);
         sig = sig * env * amp;
         sig = PanAz.ar(~numSpeakers, sig, pan, width: width);
         Out.ar(out, sig);
@@ -340,28 +340,6 @@
         Out.ar(out, sig);
     }).add;
 
-    SynthDef(\fbdelay, {
-        arg in, out, amp=0.3, fb=0.2, gate=1, da=2, mindelay=0.4, maxdelay=1.0;
-        var sigs, sig, env, src, fbNode, fbNodes, n=5, delays;
-        // delays = Array.series(n, 0.3, 0.2);
-        delays = Array.fill(n, {|i| i.linlin(0, n, mindelay, maxdelay)});
-        env = EnvGen.kr(Env.asr(0.01, 1.0, 0.01), gate: gate, doneAction: da);
-        src = In.ar(in, 1);
-        fbNodes = {FbNode(1, 2.0)} ! n;
-        sigs = n.collect {
-            arg i;
-            sig = src 
-            + (fbNodes[i].delay(delays[i])*fb) 
-            + (fbNodes[(i+1) % n].delay(delays[i])*fb) 
-            + (fbNodes[(i - 1) % n].delay(delays[i])*fb);
-            sig = LeakDC.ar(sig);
-            fbNodes[i].write(sig);
-        };
-        sigs = sigs * env * amp;
-        sigs = SplayAz.ar(~numSpeakers, sigs, spread: 1, width:~numSpeakers, center: 0);
-        Out.ar(out, sigs);
-    }).add;
-
     SynthDef(\grdelay, {
         arg in, out, amp=0.3, fb=0.2, gate=1, da=2, mindelay=0.4, maxdelay=1.0, 
         modfreq=0.1, moddepth=0.0, limit=0.8,
@@ -449,8 +427,8 @@
         ), gate: \gate.kr(1), doneAction: \da.kr(2));
         sig = In.ar(\in.kr, ~numSpeakers);
         sig = CombC.ar(sig, \maxDelay.ir(1), \delay.kr(0.1), \decay.kr(1));
+        sig = PanAz.ar(~numSpeakers, sig, \pan.kr(0), width: \width.kr(2));
         sig = sig * \amp.kr(1) * env;
         Out.ar(\out.kr(0), sig);
-    });
-        
+    }).add;
 )

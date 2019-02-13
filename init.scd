@@ -1,8 +1,7 @@
 (
     ~projectfolder = "/home/kf/sc/tbo";
-    // ~projectfolder = "pwd".unixCmdGetStdOutLines[0];
     ~numSpeakers = 2;
-    ~numSubs = 2;
+    ~numSubs = 0;
     ~hasQmidiNet = false;
     ~hasPush = false;
 
