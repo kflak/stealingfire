@@ -1,72 +1,74 @@
 (
-    SynthDef(\lfosaw, {
-        arg out, amp=1.0, freq=1, offset=0, da=2, gate=1, attack=0.1, rel=0.1;
-        var sig, env;
-        env = EnvGen.kr(Env.asr(attack, 1.0, rel), gate: gate, doneAction: da);
-        sig = Saw.ar(freq) * env * amp;
-        sig = sig + offset;
-        Out.kr(out, sig);
+    SynthDef(\saw, {
+        var sig, env, freq;
+        freq = \freq.kr(440);
+        env = EnvGen.kr(Env.asr(\attack.kr(0.1), 1.0, \rel.kr(0.1)), gate: \gate.kr(1), doneAction: \da.kr(2));
+        sig = Saw.ar(freq);
+        sig = sig.curverange(\lo.kr(0.0), \hi.kr(1.0), \curve.kr(0));
+        sig = sig * env * \amp.kr(0.2) * AmpComp.kr(freq);
+        Out.ar(\out.kr(0), sig);
     }).add;
 
-    SynthDef(\lfosin, {
-        arg out, amp=1.0, freq=1, offset=0, da=2, gate=1, attack=0.1, rel=0.1;
-        var sig, env;
-        env = EnvGen.kr(Env.asr(attack, 1.0, rel), gate: gate, doneAction: da);
-        sig = SinOsc.ar(freq) * env * amp;
-        sig = sig + offset;
-        Out.kr(out, sig);
+    SynthDef(\sine, {
+        var sig, env, freq;
+        freq = \freq.kr(440);
+        env = EnvGen.kr(Env.asr(\attack.kr(0.1), 1.0, \rel.kr(0.1)), gate: \gate.kr(1), doneAction: \da.kr(2));
+        sig = SinOsc.ar(freq);
+        sig = sig.curverange(\lo.kr(0.0), \hi.kr(1.0), \curve.kr(0));
+        sig = sig * env * \amp.kr(0.2) * AmpComp.kr(freq);
+        Out.ar(\out.kr(0), sig);
     }).add;
 
     SynthDef(\route, {
-        arg in, out, amp, da=2, gate=1;
         var sig, env;
-        env = EnvGen.kr(Env.asr(0.01, 1.0, 0.01), gate: gate, doneAction: da);
-        sig = In.ar(in, ~numSpeakers);
-        sig = sig * env * amp;
-        Out.ar(out, sig);
+        env = EnvGen.kr(Env.asr(\attack.kr(0.1), 1.0, \rel.kr(0.1)), gate: \gate.kr(1), doneAction: \da.kr(2));
+        sig = In.ar(\in.kr(~numSpeakers), ~numSpeakers);
+        sig = sig * env * \amp.kr(1);
+        Out.ar(\out.kr(0), sig);
     }).add;
 
-    SynthDef(\mixToDualMono, {
-        arg in, attack=0.1, rel=0.1, amp=1, out=0, gate=1;
+    SynthDef(\mono, {
         var sig, env;
-        env = EnvGen.kr(Env.asr(attack, 1, rel), gate: gate, doneAction: 2);
-        sig = In.ar(in, ~numSpeakers);
+        env = EnvGen.kr(Env.asr(\attack.kr(0.1), 1.0, \rel.kr(0.1)), gate: \gate.kr(1), doneAction: \da.kr(2));
+        sig = In.ar(\in.kr(~numSpeakers), ~numSpeakers);
         sig = sig.sum;
-        sig = sig ! 2;
-        sig = sig * amp * env;
-        Out.ar(out, sig);
+        sig = sig * env * \amp.kr(1);
+        Out.ar(\out.kr(0), sig);
+    }).add;
+
+    SynthDef(\panner, {
+        var sig, env;
+        env = EnvGen.kr(Env.asr(\attack.kr(0.1), 1, \rel.kr(0.1)), gate: \gate.kr(1), doneAction: \da.kr(2));
+        sig = In.ar(\in.kr(~numSpeakers), 1);
+        sig = PanAz.ar(~numSpeakers, sig, \pan.kr(0), width: \width.kr(2.0));
+        Out.ar(\out.kr(0), sig);
     }).add;
 
     SynthDef(\soundin, {
-        arg in, gate=1, da=2, amp=0.2, pan=0, width=2.0, out=0;
         var sig, env;
-        env = EnvGen.kr(Env.asr(0.01, 1.0, 0.01), gate: gate, doneAction: da);
-        //not sure if this is a good idea, but now the index given to soundin
-        //will be the same as the index listed on the soundcard...
-        sig = SoundIn.ar(in);
-        sig = sig * env * amp;
-        sig = PanAz.ar(~numSpeakers, sig, pan, width: width);
-        Out.ar(out, sig);
+        env = EnvGen.kr(Env.asr(0.01, 1.0, 0.01), gate: \gate.kr(1), doneAction: \da.kr(2));
+        sig = SoundIn.ar(\in.kr(0));
+        sig = sig * env * \amp.kr(0.2);
+        // sig = PanAz.ar(~numSpeakers, sig, \pan.kr(0), width: \width.kr(2.0));
+        Out.ar(\out.kr(0), sig);
     }).add;
 
     SynthDef(\compressor, {
-        arg in, attack=0.1, rel=0.1, amp=1, out=0, gate=1, ratio=2, gain=1, thresh=0.7;
         var sig, env;
-        env = EnvGen.kr(Env.asr(attack, 1, rel), gate: gate, doneAction: 2);
-        sig = In.ar(in, ~numSpeakers);
-        sig = Compander.ar(sig, sig, slopeAbove: 1/ratio, thresh: thresh, mul: gain);
-        sig = sig * amp * env;
-        Out.ar(out, sig);
+        env = EnvGen.kr(Env.asr(\attack.kr(0.1), 1.0, \rel.kr(0.1)), gate: \gate.kr(1), doneAction: \da.kr(2));
+        sig = In.ar(\in.kr(~numSpeakers), ~numSpeakers);
+        sig = Compander.ar(sig, sig, slopeAbove: \ratio.kr(2).reciprocal, thresh: \thresh.kr(0.7));
+        sig = sig * \amp.kr(1) * env;
+        Out.ar(\out.kr(0), sig);
     }).add;
 
     SynthDef(\limiter, {
-        arg in, attack=0.1, rel=0.1, amp=1, out=0, gate=1, limit=0.9;
         var sig, env;
-        env = EnvGen.kr(Env.asr(attack, 1, rel), gate: gate, doneAction: 2);
-        sig = In.ar(in, ~numSpeakers);
-        sig = Limiter.ar(sig, limit);
-        sig = sig * amp * env;
-        Out.ar(out, sig);
+        env = EnvGen.kr(Env.asr(\attack.kr(0.1), 1.0, \rel.kr(0.1)), gate: \gate.kr(1), doneAction: \da.kr(2));
+        sig = In.ar(\in.kr(~numSpeakers), ~numSpeakers);
+        sig = Limiter.ar(sig, \limit.kr(0.9));
+        sig = sig * \amp.kr(1) * env;
+        Out.ar(\out.kr(0), sig);
     }).add;
 
     SynthDef(\eq, {
@@ -86,18 +88,35 @@
         Out.ar(out, sig);
     }).add;
 
+    SynthDef(\hishelf, {
+        var sig, env;
+        env = EnvGen.kr(Env.asr(\attack.kr(0.1), 1.0, \rel.kr(0.1)), gate: \gate.kr(1), doneAction: \da.kr(2));
+        sig = In.ar(\in.kr(~numSpeakers), ~numSpeakers);
+        sig = BHiShelf(sig, \freq.kr(1000), \db.kr(0));
+        sig = sig * \amp.kr(1) * env;
+        Out.ar(\out.kr(0), sig);
+    }).add;
+
+    SynthDef(\hipass, {
+        var sig, env;
+        env = EnvGen.kr(Env.asr(\attack.kr(0.1), 1.0, \rel.kr(0.1)), gate: \gate.kr(1), doneAction: \da.kr(2));
+        sig = In.ar(\in.kr(~numSpeakers), ~numSpeakers);
+        sig = BHiPass(sig, \freq.kr(20));
+        sig = sig * \amp.kr(1) * env;
+        Out.ar(\out.kr(0), sig);
+    }).add;
+
     // ******************** instruments ********************
 
     SynthDef(\pitchFollower, { 
-        arg in, out, pitchratio=0.5, da=2, pan=0, width=2, amp=0.1, gate=1;
-        var input, freq, hasFreq, sig, env;
-        input = SoundIn.ar(in);
-        # freq, hasFreq = Pitch.kr(input);
-        env = EnvGen.kr(Env.asr(0.1, amp, 0.1), gate: gate, doneAction: da);
-        sig = SinOsc.ar(freq * pitchratio) * input + input;
+        var in, freq, hasFreq, sig, env;
+        env = EnvGen.kr(Env.asr(\attack.kr(0.1), 1.0, \rel.kr(0.1)), gate: \gate.kr(1), doneAction: \da.kr(2));
+        in = In.ar(\in.kr(~numSpeakers));
+        # freq, hasFreq = Pitch.kr(in);
+        sig = SinOsc.ar(freq * \pitchratio.kr(0.5)) * in + in;
         sig = sig * Amplitude.kr(sig);
-        sig = sig * env;
-        Out.ar(out, sig);
+        sig = sig * env * \amp.kr(0.1);
+        Out.ar(\out.kr(0), sig);
     }).add;
 
     SynthDef(\reso,{
@@ -120,7 +139,7 @@
         Out.ar(out, sig);
     }).add;
 
-    SynthDef(\playbufgate,{
+    SynthDef(\playbufGate,{
         arg buf=0, attack=0.0, rel=10, da=2, amp=0.3, pan=0, width=2, out=0, gate=1, lagup=0.1, lagdown=0.1, loop=1.0, startpos=0, rate=1;
         var sig, env;
         env = EnvGen.kr(Env.asr(attack, 1, rel, curve: -4), gate, doneAction: da);
@@ -182,7 +201,6 @@
         sig = PanAz.ar(~numSpeakers, sig, pan, width: width);
         Out.ar(out, sig);
     }).add;
-
 
     SynthDef(\click, {
         arg amp=0.3, pan=0, width=2, rel=0.0001, out=0;
@@ -292,17 +310,6 @@
         Out.ar(out, sig);
     }).add;
 
-    SynthDef(\clickdust, {
-        arg density=10, amp=0.3, pan=0, width=2, attack=0.5, rel=3, ctrlin=0, out=0;
-        var sig, env, trig;
-        sig = Dust.ar(density);
-        env = EnvGen.kr(Env.perc(attack, rel, -4), doneAction: 2);
-        sig = sig * env * amp;
-        sig = LeakDC.ar(sig);
-        sig = PanAz.ar(~numSpeakers, sig, pan, width: width);
-        Out.ar(out, sig);
-    }).add;
-
     SynthDef(\fire, { 
         arg hipassfreq=40, bandpassfreq=600, bandpassrq=5.0, 
         pan=0, gate=1, da=2, width=~numSpeakers, 
@@ -389,7 +396,8 @@
         phase = Phasor.ar(0, rate: 1, start:0, end: frames);
         src = In.ar(in);
         BufWr.ar(src, buf, phase);
-        trig = Impulse.kr(freq);
+        // trig = Impulse.kr(freq);
+        trig = \trigger.kr(20);
         pos = phase.linlin(0, frames, 0.0, 1.0);
         pan = TRand.kr(panMin, panMax, trig);
         sig = GrainBuf.ar(~numSpeakers, trig, grainsize, buf, rate, pos, pan: pan);
@@ -405,7 +413,7 @@
         Out.ar(out, sig);
     }).add;
 
-    SynthDef(\dust, {
+    SynthDef(\dustGate, {
         var sig, env;
         env = EnvGen.kr(Env.asr(
             \attack.kr(0.01), 
@@ -413,8 +421,32 @@
             \release.kr(0.01)
         ), gate: \gate.kr(1), doneAction: \da.kr(2));
         sig = Dust.ar(\density.kr(10));
+        sig = LeakDC.ar(sig);
         sig = sig * \amp.kr(1) * env;
-        sig = PanAz.ar(~numSpeakers, sig, \pan.kr(0), width: \width.kr(2));
+        Out.ar(\out.kr(0), sig);
+    }).add;
+
+    SynthDef(\dust, {
+        var sig, env;
+        env = EnvGen.kr(Env.perc(
+            \attack.kr(0.01), 
+            \release.kr(0.01)
+        ), gate: \gate.kr(1), doneAction: \da.kr(2));
+        sig = Dust.ar(\density.kr(10));
+        sig = LeakDC.ar(sig);
+        sig = sig * \amp.kr(1) * env;
+        Out.ar(\out.kr(0), sig);
+    }).add;
+
+    SynthDef(\impulse, {
+        var sig, env;
+        env = EnvGen.kr(Env.asr(
+            \attack.kr(0.01), 
+            1, 
+            \release.kr(0.01)
+        ), gate: \gate.kr(1), doneAction: \da.kr(2));
+        sig = Impulse.ar(\freq.kr(10));
+        sig = sig * \amp.kr(1) * env;
         Out.ar(\out.kr, sig);
     }).add;
 
@@ -427,7 +459,6 @@
         ), gate: \gate.kr(1), doneAction: \da.kr(2));
         sig = In.ar(\in.kr, ~numSpeakers);
         sig = CombC.ar(sig, \maxDelay.ir(1), \delay.kr(0.1), \decay.kr(1));
-        sig = PanAz.ar(~numSpeakers, sig, \pan.kr(0), width: \width.kr(2));
         sig = sig * \amp.kr(1) * env;
         Out.ar(\out.kr(0), sig);
     }).add;
