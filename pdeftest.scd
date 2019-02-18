@@ -83,3 +83,23 @@ Pdef(\test).stop;
     ).play;
 )
 
+b = Buffer.read(s, "/home/kf/sc/primemover/audio/lullaby/aiuaiu.aiff");
+b.stop;
+
+(
+    Pdef(\lullagrain,
+        Pmono(
+            \grbuf,
+            \dur, 0.05,
+            \trig, Pseq([1, 0], inf),
+            \db, 0,
+            \pos, Pwhite(0.0, 1.0),
+            \pan, Pwhite(-1, 1),
+            \grainsize, Pwhite(0.01, 0.1),
+            \buf, b
+        )
+    ).play;
+)
+Pdef(\monotest).stop;
+
+

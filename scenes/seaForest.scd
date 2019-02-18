@@ -1,53 +1,76 @@
 (
     var group = Group.new();
-    var pdefChain, micChain, mic, pdefOut, micOut;
-    pdefChain = Chain(s, ~numSpeakers, 
-        [
-            \comb ! 8, 
-            [
-                \delay, 8.collect{rrand(0.1, 1.8)}, 
-                \decay, 8, 
-                \pan, 8.collect{|i| i.linlin(0, 7, -1.0, 1.0)}
-            ].lace(48).clump(4)
-        ], 
-        target: group
-    );
-    micChain = Chain(s, ~numSpeakers, 
-        [
-            \comb ! 8, 
-            [
-                \delay, 8.collect{rrand(0.1, 1.8)}, 
-                \decay, 16, 
-            ].lace(48).clump(4)
-        ], 
-        target: group
-    );
-    mic = Synth(\soundin, [\in, 0, \out, micChain.bus[0], \amp, -12.dbamp]);
-    pdefOut = Route(in: pdefChain.bus[1], out: 0, numCh: 2, amp: 1, target: g, addAction: \addToTail);
-    micOut = Route(in: micChain.bus[1], out: 0, numCh: 2, amp: 1, target: g, addAction: \addToTail);
+    var plingChain, micChain, micBus, plingBus; 
+    var lullaSynth, lullaGrain, lullaBuf, lullaChain, lullaBus;
+    var mic;
+    var pling;
 
-    Pdef(\seaForest).fadeTime = 60;
-    Pdef(\seaForest, Pbind( \amp, 0)).play;
-    Pdef(\seaForest,
-        Pbind(
-            \instr, \default,
-            \midinote, [48, 53, 55],
-            \db, -30,
-            \pan, Pwhite([-1.0, 1.0]),
-            \dur, 1,
-            \legato, 0.3,
-            \out, pdefChain.bus[0],
-        )
-    ).play;
+    plingBus = Bus.audio(s, ~numSpeakers);
+    plingChain = 8.collect{ Synth(\comb, [\in, plingBus, \out, 0, \delay, rrand(0.1, 1.8)], group) };
+
+
+    lullaBus = Bus.audio(s, ~numSpeakers);
+    lullaBuf = Buffer.read(s, "/home/kf/sc/primemover/audio/lullaby/aiuaiu.aiff");
+    lullaChain = Synth(\fold, [\in, lullaBus, \out, 0, \gain, 10.dbamp], group, \addToTail);
+    lullaSynth = Synth(\grbuf, [\out, lullaBus, \buf, lullaBuf], group);
+
+    micBus = Bus.audio(s, ~numSpeakers);
+    micChain = 8.collect{ Synth( \comb, [\delay, rrand(0.1, 1.8), \decay, 16 ], group) };
+    mic = Synth(\soundin, [\in, 0, \out, micBus, \amp, -12.dbamp], group);
+
+    pling = Pbind(
+        \instr, \default,
+        \midinote, [48, 53, 55],
+        \db, -30,
+        \pan, Pwhite([-1.0, 1.0]),
+        \dur, 1,
+        \legato, 0.3,
+        \out, plingBus,
+        \group, group
+    );
+
+    lullaGrain = Pbind (
+        \type, \set,
+        \id, lullaSynth.nodeID,
+        \args, #[\trig, \amp, \pan, \pos, \rate, \grainsize],
+        \dur, 0.0125,
+        \trig, Prand([1, 0], inf),
+        \db, 6,
+        \pos, Pwhite(0.0, 1.0),
+        \rate, Pwhite(-24, 0).midiratio,
+        \pan, Pwhite(-1, 1),
+        \grainsize, Pwhite(0.0001, 0.01),
+    );
+
+    ~seaForest = Routine {
+        Pdef(\seaForest).fadeTime = 20;
+        Pdef(\seaForest, Pbind( \amp, 0)).play;
+        1.wait;
+        Pdef(\seaForest, pling).play;
+        20.wait;
+        Pdef(\seaForest, Ppar([pling, lullaGrain], inf)).play;
+        20.wait;
+        Pdef(\seaForest).fadeTime = 10;
+        Pdef(\seaForest, lullaGrain).play;
+    }.play;
 
     ~seaForestFree = {
         Routine {
+            var releaseTime = 5;
             Pdef(\seaForest).stop;
-            mic.release(5);
-            15.wait;
-            [pdefOut, micOut, pdefChain, micChain, group].do(_.free);
+            Pdef(\seaForest).clear;
+            mic.release(releaseTime);
+            micChain.do(_.release(releaseTime));
+            lullaChain.release(releaseTime);
+            lullaSynth.release(releaseTime);
+            plingChain.do(_.release(releaseTime));
+            releaseTime.wait;
+            group.free;
         }.play;
     };
 )
 
 // ~seaForestFree.();
+// s.meter;
+// s.plotTree;
+

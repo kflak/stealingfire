@@ -215,14 +215,9 @@
     }).add;
 
     SynthDef(\grbuf, {
-        var sig, src, env, trig, buf, pos, pan;
+        var sig, env;
         env = EnvGen.kr(Env.asr(\attack.kr(0.1), 1.0, \rel.kr(0.1)), gate: \gate.kr(1), doneAction: \da.kr(2));
-        buf = \buf.kr(0);
-        trig = In.ar(\trig.kr(0), 1);
-        src = In.ar(\in.kr(~numSpeakers));
-        pos = In.ar(\pos.kr(0), 1);
-        pan = In.ar(\pan.kr(0), 1);
-        sig = GrainBuf.ar(~numSpeakers, trig, \grainsize.kr(0.2), buf, \rate.kr(1), pos, pan: pan);
+        sig = GrainBuf.ar(~numSpeakers, \trig.kr, \grainsize.kr(0.2), \buf.kr(0), \rate.kr(1), \pos.kr(0), pan: \pan.kr(0));
         sig = sig * env * \amp.kr(0.3);
         Out.ar(\out.kr(0), sig);
     }).add;
@@ -319,6 +314,16 @@
         trig = In.ar(\reset.kr(0));
         env = EnvGen.kr(Env.asr( \attack.kr(0.01), 1, \release.kr(0.01)), gate: \gate.kr(1), doneAction: \da.kr(2));
         sig = Phasor.ar(trig, \rate.kr(1), \start.kr(0), \end.kr(1));
+        sig = sig * \amp.kr(1) * env;
+        Out.ar(\out.kr(0), sig);
+    }).add;
+
+    SynthDef(\fold, {
+        var sig, env;
+        env = EnvGen.kr(Env.asr( \attack.kr(0.01), 1, \release.kr(0.01)), gate: \gate.kr(1), doneAction: \da.kr(2));
+        sig = In.ar(\in.kr(~numSpeakers), ~numSpeakers);
+        sig = sig * \gain.kr(1);
+        sig = sig.fold2;
         sig = sig * \amp.kr(1) * env;
         Out.ar(\out.kr(0), sig);
     }).add;
